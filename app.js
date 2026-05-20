@@ -1,0 +1,557 @@
+// ─── DEFAULT MENU DATA ───
+const DEFAULT_MENU = [
+  // Koffie
+  { id: 1, category: 'Koffie', name: 'Espresso', desc: 'Krachtig & puur', price: 1.80, emoji: '☕', img: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=400&q=80' },
+  { id: 2, category: 'Koffie', name: 'Espresso Macchiato', desc: 'Espresso met een dot melkschuim', price: 2.00, emoji: '☕', img: 'https://images.unsplash.com/photo-1485808191679-5f86510bd9d4?w=400&q=80' },
+  { id: 3, category: 'Koffie', name: 'Americano', desc: 'Espresso aangelengd met heet water', price: 2.30, emoji: '☕', img: 'https://images.unsplash.com/photo-1497515114629-f71d768fd07c?w=400&q=80' },
+  { id: 4, category: 'Koffie', name: 'Filter Coffee', desc: 'Zacht & lang', price: 2.80, emoji: '☕', img: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80' },
+  { id: 5, category: 'Koffie', name: 'Cappuccino', desc: 'Espresso met romig melkschuim', price: 2.50, emoji: '☕', img: 'https://images.unsplash.com/photo-1561047029-3000c68339ca?w=400&q=80' },
+  { id: 6, category: 'Koffie', name: 'Latte Macchiato', desc: 'Gelaagd melk & espresso', price: 2.50, emoji: '🥛', img: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=400&q=80' },
+  { id: 7, category: 'Koffie', name: 'Flat White', desc: 'Dubbel shot, weinig melk', price: 3.00, emoji: '☕', img: 'https://images.unsplash.com/photo-1577968897966-3d4325b36b61?w=400&q=80' },
+  { id: 8, category: 'Koffie', name: 'Cacao Latte', desc: 'Espresso met cacao & romige melk', price: 3.10, emoji: '🍫', img: 'https://images.unsplash.com/photo-1542990253-a781e5585b38?w=400&q=80' },
+  // Specials
+  { id: 9, category: 'Specials', name: 'Hot Chocolate', desc: 'Rijke warme chocolade', price: 4.40, emoji: '🍫', img: 'https://images.unsplash.com/photo-1542736667-069246bdbc6d?w=400&q=80' },
+  { id: 10, category: 'Specials', name: 'Hot Chocolate with Cream', desc: 'Warme chocolade met slagroom', price: 5.40, emoji: '🍫', img: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=400&q=80' },
+  { id: 11, category: 'Specials', name: 'Chai Latte', desc: 'Warm & kruidig', price: 3.50, emoji: '🫖', img: 'https://images.unsplash.com/photo-1557006021-b85faa2bc5e2?w=400&q=80' },
+  { id: 12, category: 'Specials', name: 'Matcha Latte', desc: 'Premium matcha met oatmilk', price: 3.50, emoji: '🍵', img: 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=400&q=80' },
+  { id: 13, category: 'Specials', name: 'Hot Ginger Lemonade', desc: 'Verse gember met citroen', price: 3.70, emoji: '🍋', img: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80' },
+  // Thee
+  { id: 14, category: 'Thee', name: 'Green Tea', desc: 'Licht & fris', price: 2.50, emoji: '🍵', img: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80' },
+  { id: 15, category: 'Thee', name: 'Black Tea', desc: 'Klassiek & krachtig', price: 2.50, emoji: '🫖', img: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&q=80' },
+  // Panino
+  { id: 16, category: 'Panino', name: 'Cheese Chicken Wrap', desc: 'Wrap met kaas & kip', price: 10.90, emoji: '🌯', img: 'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=400&q=80' },
+  { id: 17, category: 'Panino', name: 'Truffle Sandwich', desc: 'Gegrild broodje met truffel', price: 10.90, emoji: '🥪', img: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&q=80' },
+  { id: 18, category: 'Panino', name: 'Falafel Wrap', desc: 'Vegetarische wrap met falafel', price: 10.90, emoji: '🌯', img: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400&q=80' },
+  { id: 19, category: 'Panino', name: 'Iberian Sandwich', desc: 'Gegrild broodje met Iberisch vlees', price: 10.90, emoji: '🥪', img: 'https://images.unsplash.com/photo-1553909489-cd47e0907980?w=400&q=80' },
+  { id: 20, category: 'Panino', name: 'Cheese Salmon', desc: 'Wrap met zalm & roomkaas', price: 10.90, emoji: '🌯', img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&q=80' },
+  { id: 21, category: 'Panino', name: 'Chicken Avocado Brie', desc: 'Kip, avocado & brie', price: 10.90, emoji: '🥪', img: 'https://images.unsplash.com/photo-1481070555726-e2fe8357725b?w=400&q=80' },
+  { id: 22, category: 'Panino', name: 'Avocado Salmon Bagel', desc: 'Bagel met avocado & gerookte zalm', price: 10.90, emoji: '🥯', img: 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?w=400&q=80' },
+  { id: 23, category: 'Panino', name: 'Mustard Tuna', desc: 'Tonijn met mosterd & verse groenten', price: 10.90, emoji: '🥪', img: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?w=400&q=80' },
+  // Salades
+  { id: 24, category: 'Salades', name: 'Salade naar keuze', desc: '1 of 2 bases met 4 ingrediënten', price: 11.80, emoji: '🥗', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80' },
+];
+
+const CATEGORIES = ['Koffie', 'Specials', 'Thee', 'Panino', 'Salades'];
+
+// ─── STATE ───
+function getMenu() {
+  const stored = localStorage.getItem('flow_menu');
+  return stored ? JSON.parse(stored) : DEFAULT_MENU;
+}
+
+function saveMenu(menu) {
+  localStorage.setItem('flow_menu', JSON.stringify(menu));
+}
+
+function getOrders() {
+  const stored = localStorage.getItem('flow_orders');
+  return stored ? JSON.parse(stored) : [];
+}
+
+function saveOrders(orders) {
+  localStorage.setItem('flow_orders', JSON.stringify(orders));
+}
+
+// ─── CART STATE (menukaart) ───
+let cart = [];
+
+function getTableNumber() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('tafel') || '1';
+}
+
+// ─── RENDER MENUKAART ───
+function renderMenu() {
+  const menu = getMenu();
+  const container = document.getElementById('menu-container');
+  if (!container) return;
+
+  const activeCategory = document.querySelector('.nav-tab.active')?.dataset.category || 'Koffie';
+
+  const items = menu.filter(i => i.category === activeCategory && i.available !== false && i.img);
+
+  container.innerHTML = `
+    <div class="menu-section">
+      <h2 class="section-title">${activeCategory}</h2>
+      <div class="menu-grid">
+        ${items.map(item => `
+          <div class="menu-item" onclick="addToCart(${item.id})">
+            <div class="menu-item-img-wrap">
+                <img class="menu-item-img" src="${item.img}" alt="${item.name}"
+                  onerror="this.closest('.menu-item').style.display='none'">
+              </div>
+            <div class="menu-item-body">
+              <div class="menu-item-name">${item.name}</div>
+              <div class="menu-item-desc">${item.desc}</div>
+              <div class="menu-item-footer">
+                <span class="menu-item-price">€ ${item.price.toFixed(2)}</span>
+                <button class="menu-item-add" onclick="event.stopPropagation(); addToCart(${item.id})">+</button>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function addToCart(id) {
+  const menu = getMenu();
+  const item = menu.find(i => i.id === id);
+  if (!item) return;
+
+  const existing = cart.find(c => c.id === id);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ ...item, qty: 1 });
+  }
+  updateCartFab();
+  showCartFeedback();
+}
+
+function showCartFeedback() {
+  const fab = document.getElementById('cart-fab');
+  if (!fab) return;
+  fab.style.transform = 'scale(1.1)';
+  setTimeout(() => fab.style.transform = '', 150);
+}
+
+function updateCartFab() {
+  const fab = document.getElementById('cart-fab');
+  const count = document.getElementById('cart-count');
+  const total = document.getElementById('cart-total-fab');
+  if (!fab) return;
+
+  const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+  const totalPrice = cart.reduce((s, i) => s + i.price * i.qty, 0);
+
+  if (totalQty === 0) {
+    fab.classList.add('hidden');
+  } else {
+    fab.classList.remove('hidden');
+    count.textContent = totalQty;
+    total.textContent = `€ ${totalPrice.toFixed(2)}`;
+  }
+}
+
+function openCart() {
+  const overlay = document.getElementById('cart-overlay');
+  overlay.classList.add('open');
+  renderCartModal();
+}
+
+function closeCart() {
+  const overlay = document.getElementById('cart-overlay');
+  overlay.classList.remove('open');
+}
+
+function renderCartModal() {
+  const body = document.getElementById('cart-body');
+  if (!body) return;
+
+  if (cart.length === 0) {
+    body.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-light)">
+      <span style="font-size:2.5rem">🛒</span><br><br>Je winkelmandje is leeg
+    </div>`;
+    return;
+  }
+
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+
+  body.innerHTML = `
+    ${cart.map(item => `
+      <div class="cart-item">
+        <div class="cart-item-thumb">
+          ${item.img
+            ? `<img src="${item.img}" alt="${item.name}" onerror="this.parentElement.innerHTML='${item.emoji}'">`
+            : item.emoji
+          }
+        </div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-price">€ ${(item.price * item.qty).toFixed(2)}</div>
+        </div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+        </div>
+      </div>
+    `).join('')}
+    <div class="cart-total">
+      <span>Totaal</span>
+      <span>€ ${total.toFixed(2)}</span>
+    </div>
+    <div class="order-note">
+      <label>Opmerking (bijv. allergieen, extra shot...)</label>
+      <textarea id="order-note" rows="3" placeholder="Bijv. lactosevrije melk, extra warm..."></textarea>
+    </div>
+    <button class="btn btn-primary btn-full" style="margin-top:16px" onclick="placeOrder()">
+      Bestelling plaatsen &rarr;
+    </button>
+  `;
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(c => c.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
+  updateCartFab();
+  renderCartModal();
+}
+
+function placeOrder() {
+  if (cart.length === 0) return;
+
+  const note = document.getElementById('order-note')?.value || '';
+  const orders = getOrders();
+  const order = {
+    id: Date.now(),
+    table: getTableNumber(),
+    items: [...cart],
+    note,
+    status: 'new',
+    time: new Date().toISOString(),
+    total: cart.reduce((s, i) => s + i.price * i.qty, 0),
+  };
+
+  orders.push(order);
+  saveOrders(orders);
+
+  cart = [];
+  updateCartFab();
+
+  const body = document.getElementById('cart-body');
+  body.innerHTML = `
+    <div class="order-success">
+      <span class="big-emoji">🎉</span>
+      <h2>Bestelling geplaatst!</h2>
+      <p>Tafel ${order.table} — we komen zo bij je!</p>
+      <p style="margin-top:8px;font-size:0.85rem">Bestelnummer: #${String(order.id).slice(-4)}</p>
+    </div>
+  `;
+
+  setTimeout(() => closeCart(), 3000);
+}
+
+// ─── RENDER KITCHEN ───
+function renderKitchen() {
+  const container = document.getElementById('kitchen-container');
+  if (!container) return;
+
+  const orders = getOrders().filter(o => o.status !== 'done');
+
+  if (orders.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <span class="big-emoji">☕</span>
+        <p>Geen openstaande bestellingen</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = `<div class="kitchen-grid">
+    ${orders.map(order => {
+      const time = new Date(order.time);
+      const elapsed = Math.floor((Date.now() - time) / 60000);
+      return `
+        <div class="order-card ${order.status === 'new' ? 'new' : ''} ${order.status === 'ready' ? 'ready' : ''}">
+          <div class="order-card-header">
+            <span class="order-table">Tafel ${order.table}</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="status-badge status-${order.status}">${statusLabel(order.status)}</span>
+              <span class="order-time">${elapsed}m geleden</span>
+            </div>
+          </div>
+          <ul class="order-items-list">
+            ${order.items.map(i => `<li><span>${i.emoji} ${i.name}</span><span>x${i.qty}</span></li>`).join('')}
+          </ul>
+          ${order.note ? `<div class="order-note-text">📝 ${order.note}</div>` : ''}
+          <div class="order-actions">
+            ${order.status === 'new' ? `<button class="btn btn-warning btn-sm" onclick="updateOrderStatus(${order.id}, 'making')">🔄 Wordt gemaakt</button>` : ''}
+            ${order.status === 'making' ? `<button class="btn btn-success btn-sm" onclick="updateOrderStatus(${order.id}, 'ready')">✓ Klaar</button>` : ''}
+            ${order.status === 'ready' ? `<button class="btn btn-sm" onclick="updateOrderStatus(${order.id}, 'done')" style="background:var(--border)">Afgeleverd</button>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('')}
+  </div>`;
+}
+
+function statusLabel(s) {
+  return { new: 'Nieuw', making: 'Bezig', ready: 'Klaar', done: 'Afgeleverd' }[s] || s;
+}
+
+function updateOrderStatus(id, status) {
+  const orders = getOrders();
+  const order = orders.find(o => o.id === id);
+  if (order) {
+    order.status = status;
+    saveOrders(orders);
+    renderKitchen();
+  }
+}
+
+// ─── RENDER ADMIN ───
+let adminSection = 'products';
+let editingId = null;
+
+function renderAdmin() {
+  renderAdminProducts();
+}
+
+function renderAdminProducts() {
+  const container = document.getElementById('admin-main');
+  if (!container) return;
+  const menu = getMenu();
+
+  container.innerHTML = `
+    <div class="admin-section-title">Menu beheren</div>
+    <div style="margin-bottom:20px">
+      <button class="btn btn-primary" onclick="showAddForm()">+ Product toevoegen</button>
+    </div>
+    <div id="product-form-area"></div>
+    <div class="product-list" id="product-list">
+      ${menu.map(item => `
+        <div class="product-row">
+          <span class="product-row-emoji">${item.emoji}</span>
+          <div class="product-row-info">
+            <div class="product-row-name">${item.name}</div>
+            <div class="product-row-cat">${item.category} ${item.available === false ? '· <span style="color:var(--danger)">Uitgeschakeld</span>' : ''}</div>
+          </div>
+          <span class="product-row-price">€ ${item.price.toFixed(2)}</span>
+          <button class="btn-icon" onclick="editProduct(${item.id})" title="Bewerken">✏️</button>
+          <button class="btn-icon danger" onclick="toggleAvailable(${item.id})" title="In/uitschakelen">
+            ${item.available === false ? '✅' : '🚫'}
+          </button>
+          <button class="btn-icon danger" onclick="deleteProduct(${item.id})" title="Verwijderen">🗑️</button>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function showAddForm(existing) {
+  const area = document.getElementById('product-form-area');
+  if (!area) return;
+  const item = existing || { emoji: '☕', name: '', desc: '', price: '', category: 'Koffie' };
+
+  area.innerHTML = `
+    <div class="form-card" style="margin-bottom:24px">
+      <h3 style="margin-bottom:20px;font-size:1.1rem">${existing ? 'Product bewerken' : 'Nieuw product'}</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Emoji</label>
+          <input id="f-emoji" value="${item.emoji}" maxlength="2">
+        </div>
+        <div class="form-group">
+          <label>Categorie</label>
+          <select id="f-cat">
+            ${CATEGORIES.map(c => `<option ${c === item.category ? 'selected' : ''}>${c}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Naam</label>
+        <input id="f-name" value="${item.name}" placeholder="bijv. Oat Cappuccino">
+      </div>
+      <div class="form-group">
+        <label>Beschrijving</label>
+        <input id="f-desc" value="${item.desc}" placeholder="korte omschrijving">
+      </div>
+      <div class="form-group">
+        <label>Prijs (€)</label>
+        <input id="f-price" type="number" step="0.1" min="0" value="${item.price}" placeholder="3.50">
+      </div>
+      <div style="display:flex;gap:12px;margin-top:8px">
+        <button class="btn btn-primary" onclick="saveProduct(${existing ? existing.id : 'null'})">
+          ${existing ? 'Opslaan' : 'Toevoegen'}
+        </button>
+        <button class="btn btn-outline" onclick="cancelForm()">Annuleren</button>
+      </div>
+    </div>
+  `;
+}
+
+function cancelForm() {
+  const area = document.getElementById('product-form-area');
+  if (area) area.innerHTML = '';
+}
+
+function saveProduct(id) {
+  const emoji = document.getElementById('f-emoji').value.trim() || '☕';
+  const name = document.getElementById('f-name').value.trim();
+  const desc = document.getElementById('f-desc').value.trim();
+  const price = parseFloat(document.getElementById('f-price').value);
+  const category = document.getElementById('f-cat').value;
+
+  if (!name || isNaN(price)) {
+    alert('Vul naam en prijs in.');
+    return;
+  }
+
+  const menu = getMenu();
+  if (id) {
+    const item = menu.find(i => i.id === id);
+    if (item) Object.assign(item, { emoji, name, desc, price, category });
+  } else {
+    const newId = Math.max(...menu.map(i => i.id), 0) + 1;
+    menu.push({ id: newId, emoji, name, desc, price, category });
+  }
+  saveMenu(menu);
+  renderAdminProducts();
+}
+
+function editProduct(id) {
+  const menu = getMenu();
+  const item = menu.find(i => i.id === id);
+  if (item) showAddForm(item);
+  document.getElementById('product-form-area')?.scrollIntoView({ behavior: 'smooth' });
+}
+
+function toggleAvailable(id) {
+  const menu = getMenu();
+  const item = menu.find(i => i.id === id);
+  if (item) {
+    item.available = item.available === false ? true : false;
+    saveMenu(menu);
+    renderAdminProducts();
+  }
+}
+
+function deleteProduct(id) {
+  if (!confirm('Weet je zeker dat je dit product wil verwijderen?')) return;
+  const menu = getMenu().filter(i => i.id !== id);
+  saveMenu(menu);
+  renderAdminProducts();
+}
+
+function renderAdminOrders() {
+  const container = document.getElementById('admin-main');
+  if (!container) return;
+  const orders = getOrders();
+
+  const grouped = orders.slice().reverse();
+  const total = orders.reduce((s, o) => s + o.total, 0);
+  const today = orders.filter(o => new Date(o.time).toDateString() === new Date().toDateString());
+  const todayTotal = today.reduce((s, o) => s + o.total, 0);
+
+  container.innerHTML = `
+    <div class="admin-section-title">Bestellingen</div>
+    <div style="display:flex;gap:16px;margin-bottom:24px">
+      <div class="form-card" style="flex:1;padding:16px 20px">
+        <div style="font-size:0.8rem;color:var(--text-light)">Vandaag</div>
+        <div style="font-size:1.4rem;font-weight:700;color:var(--primary)">€ ${todayTotal.toFixed(2)}</div>
+        <div style="font-size:0.8rem;color:var(--text-light)">${today.length} bestellingen</div>
+      </div>
+      <div class="form-card" style="flex:1;padding:16px 20px">
+        <div style="font-size:0.8rem;color:var(--text-light)">Totaal ooit</div>
+        <div style="font-size:1.4rem;font-weight:700;color:var(--primary)">€ ${total.toFixed(2)}</div>
+        <div style="font-size:0.8rem;color:var(--text-light)">${orders.length} bestellingen</div>
+      </div>
+      <div style="display:flex;align-items:center">
+        <button class="btn btn-outline btn-sm" onclick="clearOrders()">🗑️ Wis alles</button>
+      </div>
+    </div>
+    ${grouped.length === 0 ? '<div class="empty-state"><span class="big-emoji">📋</span><p>Nog geen bestellingen</p></div>' :
+      grouped.map(o => `
+        <div class="product-row" style="flex-wrap:wrap;gap:8px;margin-bottom:8px">
+          <div style="font-weight:700;min-width:80px">Tafel ${o.table}</div>
+          <div style="flex:1;font-size:0.85rem;color:var(--text-light)">${o.items.map(i => `${i.emoji}${i.name} x${i.qty}`).join(', ')}</div>
+          <div style="color:var(--primary);font-weight:600">€ ${o.total.toFixed(2)}</div>
+          <span class="status-badge status-${o.status}">${statusLabel(o.status)}</span>
+          <div style="font-size:0.75rem;color:var(--text-light)">${new Date(o.time).toLocaleTimeString('nl-BE', {hour:'2-digit',minute:'2-digit'})}</div>
+        </div>
+      `).join('')
+    }
+  `;
+}
+
+function clearOrders() {
+  if (!confirm('Wis alle bestellingen?')) return;
+  saveOrders([]);
+  renderAdminOrders();
+}
+
+function renderAdminQR() {
+  const container = document.getElementById('admin-main');
+  if (!container) return;
+
+  const baseUrl = window.location.href.replace('admin.html', 'index.html');
+  const tables = [1,2,3,4,5,6,7,8,9,10];
+
+  container.innerHTML = `
+    <div class="admin-section-title">QR-codes per tafel</div>
+    <p style="color:var(--text-light);margin-bottom:24px;font-size:0.9rem">
+      Deel deze links of print de QR-codes. Elke tafel heeft een unieke URL.
+    </p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px">
+      ${tables.map(t => `
+        <div class="form-card" style="text-align:center;padding:20px">
+          <div style="font-size:1.1rem;font-weight:700;margin-bottom:8px">Tafel ${t}</div>
+          <div style="font-size:0.75rem;word-break:break-all;color:var(--text-light);margin-bottom:12px">
+            ${baseUrl}?tafel=${t}
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="copyLink('${baseUrl}?tafel=${t}')">
+            Kopieer link
+          </button>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function copyLink(url) {
+  navigator.clipboard.writeText(url).then(() => alert('Link gekopieerd!'));
+}
+
+// ─── INIT ───
+document.addEventListener('DOMContentLoaded', () => {
+  // Menu page
+  if (document.getElementById('menu-container')) {
+    const tableNum = getTableNumber();
+    const badge = document.getElementById('table-badge');
+    if (badge) badge.textContent = `Tafel ${tableNum}`;
+
+    renderMenu();
+
+    // Category tabs
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        renderMenu();
+      });
+    });
+
+    // Cart overlay close on backdrop click
+    document.getElementById('cart-overlay')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeCart();
+    });
+  }
+
+  // Kitchen page
+  if (document.getElementById('kitchen-container')) {
+    renderKitchen();
+    setInterval(renderKitchen, 5000);
+  }
+
+  // Admin page
+  if (document.getElementById('admin-main')) {
+    renderAdminProducts();
+
+    document.querySelectorAll('.admin-nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.admin-nav-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        const section = item.dataset.section;
+        if (section === 'products') renderAdminProducts();
+        if (section === 'orders') renderAdminOrders();
+        if (section === 'qr') renderAdminQR();
+      });
+    });
+  }
+});

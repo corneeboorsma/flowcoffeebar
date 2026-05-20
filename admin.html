@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flow Coffeebar — Admin</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-logo">
+      <div>
+        <div class="script">flow</div>
+        <div class="subtitle">Coffeebar — Admin</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <a href="index.html" style="color:var(--text-light);font-size:0.85rem;text-decoration:none;padding:8px 14px;border-radius:20px;border:1px solid var(--border)">
+        ← Menukaart
+      </a>
+      <a href="kitchen.html" style="color:var(--text-light);font-size:0.85rem;text-decoration:none;padding:8px 14px;border-radius:20px;border:1px solid var(--border)">
+        Bar display
+      </a>
+    </div>
+  </header>
+
+  <div class="admin-layout">
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+      <div style="padding:12px 24px 20px;opacity:0.5;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em">Beheer</div>
+      <button class="admin-nav-item active" data-section="products">🍽️ Menu producten</button>
+      <button class="admin-nav-item" data-section="orders">📋 Bestellingen</button>
+      <button class="admin-nav-item" data-section="qr">📱 QR-codes</button>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="admin-content" id="admin-main"></main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
