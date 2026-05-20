@@ -818,7 +818,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 400; }
   .nav-tabs { padding: 0 12px; }
   .nav-tab { padding: 14px 14px; font-size: 0.83rem; }
 
-  .menu-section { padding: 20px 16px 120px; }
+  .menu-section { padding: 20px 16px 32px; }
   .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
 
   .cart-fab {

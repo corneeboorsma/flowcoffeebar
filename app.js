@@ -157,8 +157,9 @@ function addToCart(id) {
 function showCartFeedback() {
   const fab = document.getElementById('cart-fab');
   if (!fab) return;
-  fab.style.transform = 'translateX(-50%) scale(1.06)';
-  setTimeout(() => fab.style.transform = 'translateX(-50%)', 150);
+  const isMobile = window.innerWidth <= 640;
+  fab.style.transform = isMobile ? 'scale(1.06)' : 'translateX(-50%) scale(1.06)';
+  setTimeout(() => fab.style.transform = isMobile ? '' : 'translateX(-50%)', 150);
 }
 
 function updateCartFab() {
