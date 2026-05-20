@@ -282,9 +282,10 @@ async function placeOrder() {
 
   document.getElementById('cart-body').innerHTML = `
     <div class="order-success">
-      <span class="big-emoji">🎉</span>
+      <span class="big-emoji">☕</span>
       <h2>Bestelling geplaatst!</h2>
-      <p>Afhalen om <strong>${order.pickupTime}</strong> — we komen zo bij je!</p>
+      <p>Jouw <strong>Flow-moment</strong> staat klaar om <strong>${order.pickupTime}</strong>.</p>
+      <p style="margin-top:8px;font-size:0.85rem;color:var(--text-light)">Tot morgen! ✨</p>
     </div>
   `;
 
