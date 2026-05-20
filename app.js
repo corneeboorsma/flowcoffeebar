@@ -1,11 +1,10 @@
 // ─── LANGUAGE ───
-let currentLang = localStorage.getItem('flow_lang') || 'nl';
+let currentLang = 'nl';
 
 function t() { return TRANSLATIONS[currentLang]; }
 
 function setLang(lang) {
   currentLang = lang;
-  localStorage.setItem('flow_lang', lang);
   renderLangSwitcher();
   renderHeroQuote();
   renderNavTabs();
