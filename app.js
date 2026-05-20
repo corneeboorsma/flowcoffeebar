@@ -42,7 +42,7 @@ function renderNavTabs() {
   `).join('');
   nav.querySelectorAll('.nav-tab').forEach(tab => {
     tab.addEventListener('click', () => {
-      nav.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      nav.querySelectorAll('.nav-tab').forEach(tb => tb.classList.remove('active'));
       tab.classList.add('active');
       renderMenu();
     });
