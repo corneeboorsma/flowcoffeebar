@@ -30,12 +30,12 @@ const DEFAULT_MENU = [
   // Salades
   { id: 24, category: 'Salades', name: 'Salade naar keuze', desc: '1 of 2 bases met 4 ingrediënten', price: 11.80, emoji: '🥗', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80' },
   // Breakfast
-  { id: 25, category: 'Breakfast', name: 'Power Yoghurt Bowl', desc: 'Griekse yoghurt, granola, bessen, chiazaad & honing', price: 8.50, emoji: '🥣', img: 'https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=400&q=80' },
-  { id: 26, category: 'Breakfast', name: 'Overnight Oats Cup', desc: 'Havermout, amandelmelk, banaan, kaneel & pindakaas', price: 7.95, emoji: '🫙', img: 'https://images.unsplash.com/photo-1607532941433-304659e8198a?w=400&q=80' },
-  { id: 27, category: 'Breakfast', name: 'Mini Breakfast Box', desc: 'Bananenbrood, gekookt ei, yoghurt, fruit & noten', price: 9.50, emoji: '📦', img: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=400&q=80' },
-  { id: 28, category: 'Breakfast', name: 'Breakfast Wrap To Go', desc: 'Volkoren wrap, roerei, avocado, spinazie & kaas', price: 8.95, emoji: '🌯', img: 'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=400&q=80' },
-  { id: 29, category: 'Breakfast', name: 'The Protein Club', desc: 'Volkoren casinobrood, hüttenkäse, gerookte kip & pesto', price: 9.50, emoji: '🥪', img: 'https://images.unsplash.com/photo-1481070555726-e2fe8357725b?w=400&q=80' },
-  { id: 30, category: 'Breakfast', name: 'The Fuel Bagel', desc: 'Meergranen bagel, roomkaas, kip, rucola & zongedroogde tomaat', price: 8.95, emoji: '🥯', img: 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?w=400&q=80' },
+  { id: 25, category: 'Breakfast', name: 'Power Yoghurt Bowl', desc: 'Griekse yoghurt, granola, bessen, chiazaad & honing', price: 8.50, emoji: '🥣', img: 'https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=400&q=80' },
+  { id: 26, category: 'Breakfast', name: 'Overnight Oats Cup', desc: 'Havermout, amandelmelk, banaan, kaneel & pindakaas', price: 7.95, emoji: '🫙', img: 'https://images.unsplash.com/photo-1517673408408-2e3e5e9e0e17?w=400&q=80' },
+  { id: 27, category: 'Breakfast', name: 'Mini Breakfast Box', desc: 'Bananenbrood, gekookt ei, yoghurt, fruit & noten', price: 9.50, emoji: '📦', img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80' },
+  { id: 28, category: 'Breakfast', name: 'Breakfast Wrap To Go', desc: 'Volkoren wrap, roerei, avocado, spinazie & kaas', price: 8.95, emoji: '🌯', img: 'https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?w=400&q=80' },
+  { id: 29, category: 'Breakfast', name: 'The Protein Club', desc: 'Volkoren casinobrood, hüttenkäse, gerookte kip & pesto', price: 9.50, emoji: '🥪', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80' },
+  { id: 30, category: 'Breakfast', name: 'The Fuel Bagel', desc: 'Meergranen bagel, roomkaas, kip, rucola & zongedroogde tomaat', price: 8.95, emoji: '🥯', img: 'https://images.unsplash.com/photo-1585325701956-60dd9c8553bc?w=400&q=80' },
 ];
 
 const CATEGORIES = ['Koffie', 'Specials', 'Thee', 'Panino', 'Salades', 'Breakfast'];
