@@ -1,11 +1,10 @@
 // ─── LANGUAGE ───
-let currentLang = localStorage.getItem('flow_lang') || 'nl';
+let currentLang = 'nl';
 
 function t() { return TRANSLATIONS[currentLang]; }
 
 function setLang(lang) {
   currentLang = lang;
-  localStorage.setItem('flow_lang', lang);
   renderLangSwitcher();
   renderHeroQuote();
   renderNavTabs();
@@ -42,7 +41,7 @@ function renderNavTabs() {
   `).join('');
   nav.querySelectorAll('.nav-tab').forEach(tab => {
     tab.addEventListener('click', () => {
-      nav.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      nav.querySelectorAll('.nav-tab').forEach(tb => tb.classList.remove('active'));
       tab.classList.add('active');
       renderMenu();
     });
