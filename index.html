@@ -73,13 +73,7 @@
   <script src="app.js"></script>
   <script>
     document.getElementById('welcome-btn').addEventListener('click', function() {
-      var overlay = document.getElementById('welcome-overlay');
-      overlay.style.transition = 'opacity 0.4s ease';
-      overlay.style.opacity = '0';
-      overlay.style.pointerEvents = 'none';
-      setTimeout(function() {
-        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-      }, 420);
+      document.getElementById('welcome-overlay').style.display = 'none';
     });
   </script>
 </body>

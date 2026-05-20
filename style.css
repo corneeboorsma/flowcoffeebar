@@ -831,9 +831,8 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 400; }
   transition: opacity 0.4s ease;
 }
 
-.welcome-overlay.fade-out {
-  opacity: 0;
-  pointer-events: none;
+.welcome-overlay.hidden {
+  display: none;
 }
 
 .welcome-card {
