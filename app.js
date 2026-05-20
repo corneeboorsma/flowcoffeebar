@@ -33,7 +33,46 @@ const DEFAULT_MENU = [
 
 const CATEGORIES = ['Koffie', 'Specials', 'Thee', 'Panino', 'Salades'];
 
-// ─── STATE ───
+// ─── FIREBASE ───
+const DB_URL = 'https://flow-coffeebar-default-rtdb.europe-west1.firebasedatabase.app';
+
+async function fbGet(path) {
+  const res = await fetch(`${DB_URL}/${path}.json`);
+  return res.ok ? res.json() : null;
+}
+
+async function fbPush(path, data) {
+  const res = await fetch(`${DB_URL}/${path}.json`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+async function fbPatch(path, data) {
+  await fetch(`${DB_URL}/${path}.json`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
+async function fbDelete(path) {
+  await fetch(`${DB_URL}/${path}.json`, { method: 'DELETE' });
+}
+
+function fbListen(path, callback) {
+  const es = new EventSource(`${DB_URL}/${path}.json?accept=text/event-stream`);
+  es.addEventListener('put', e => {
+    const { data } = JSON.parse(e.data);
+    callback(data);
+  });
+  es.addEventListener('patch', e => {
+    callback(null);
+  });
+  return es;
+}
+
+// ─── MENU (localStorage) ───
 function getMenu() {
   const stored = localStorage.getItem('flow_menu');
   return stored ? JSON.parse(stored) : DEFAULT_MENU;
@@ -43,16 +82,26 @@ function saveMenu(menu) {
   localStorage.setItem('flow_menu', JSON.stringify(menu));
 }
 
-function getOrders() {
-  const stored = localStorage.getItem('flow_orders');
-  return stored ? JSON.parse(stored) : [];
+// ─── ORDERS (Firebase) ───
+async function getOrders() {
+  const data = await fbGet('orders');
+  if (!data) return [];
+  return Object.entries(data).map(([fbKey, order]) => ({ ...order, fbKey }));
 }
 
-function saveOrders(orders) {
-  localStorage.setItem('flow_orders', JSON.stringify(orders));
+async function pushOrder(order) {
+  return fbPush('orders', order);
 }
 
-// ─── CART STATE (menukaart) ───
+async function updateOrderInDb(fbKey, fields) {
+  return fbPatch(`orders/${fbKey}`, fields);
+}
+
+async function deleteOrderFromDb(fbKey) {
+  return fbDelete(`orders/${fbKey}`);
+}
+
+// ─── CART STATE ───
 let cart = [];
 
 function getTableNumber() {
@@ -67,7 +116,6 @@ function renderMenu() {
   if (!container) return;
 
   const activeCategory = document.querySelector('.nav-tab.active')?.dataset.category || 'Koffie';
-
   const items = menu.filter(i => i.category === activeCategory && i.available !== false && i.img);
 
   container.innerHTML = `
@@ -77,9 +125,9 @@ function renderMenu() {
         ${items.map(item => `
           <div class="menu-item" onclick="addToCart(${item.id})">
             <div class="menu-item-img-wrap">
-                <img class="menu-item-img" src="${item.img}" alt="${item.name}"
-                  onerror="this.closest('.menu-item').style.display='none'">
-              </div>
+              <img class="menu-item-img" src="${item.img}" alt="${item.name}"
+                onerror="this.closest('.menu-item').style.display='none'">
+            </div>
             <div class="menu-item-body">
               <div class="menu-item-name">${item.name}</div>
               <div class="menu-item-desc">${item.desc}</div>
@@ -99,13 +147,9 @@ function addToCart(id) {
   const menu = getMenu();
   const item = menu.find(i => i.id === id);
   if (!item) return;
-
   const existing = cart.find(c => c.id === id);
-  if (existing) {
-    existing.qty++;
-  } else {
-    cart.push({ ...item, qty: 1 });
-  }
+  if (existing) existing.qty++;
+  else cart.push({ ...item, qty: 1 });
   updateCartFab();
   showCartFeedback();
 }
@@ -113,8 +157,8 @@ function addToCart(id) {
 function showCartFeedback() {
   const fab = document.getElementById('cart-fab');
   if (!fab) return;
-  fab.style.transform = 'scale(1.1)';
-  setTimeout(() => fab.style.transform = '', 150);
+  fab.style.transform = 'translateX(-50%) scale(1.06)';
+  setTimeout(() => fab.style.transform = 'translateX(-50%)', 150);
 }
 
 function updateCartFab() {
@@ -122,10 +166,8 @@ function updateCartFab() {
   const count = document.getElementById('cart-count');
   const total = document.getElementById('cart-total-fab');
   if (!fab) return;
-
   const totalQty = cart.reduce((s, i) => s + i.qty, 0);
   const totalPrice = cart.reduce((s, i) => s + i.price * i.qty, 0);
-
   if (totalQty === 0) {
     fab.classList.add('hidden');
   } else {
@@ -136,14 +178,12 @@ function updateCartFab() {
 }
 
 function openCart() {
-  const overlay = document.getElementById('cart-overlay');
-  overlay.classList.add('open');
+  document.getElementById('cart-overlay').classList.add('open');
   renderCartModal();
 }
 
 function closeCart() {
-  const overlay = document.getElementById('cart-overlay');
-  overlay.classList.remove('open');
+  document.getElementById('cart-overlay').classList.remove('open');
 }
 
 function renderCartModal() {
@@ -158,15 +198,13 @@ function renderCartModal() {
   }
 
   const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-
   body.innerHTML = `
     ${cart.map(item => `
       <div class="cart-item">
         <div class="cart-item-thumb">
           ${item.img
-            ? `<img src="${item.img}" alt="${item.name}" onerror="this.parentElement.innerHTML='${item.emoji}'">`
-            : item.emoji
-          }
+            ? `<img src="${item.img}" alt="${item.name}" onerror="this.parentElement.textContent='${item.emoji}'">`
+            : item.emoji}
         </div>
         <div class="cart-item-info">
           <div class="cart-item-name">${item.name}</div>
@@ -184,7 +222,7 @@ function renderCartModal() {
       <span>€ ${total.toFixed(2)}</span>
     </div>
     <div class="order-note">
-      <label>Opmerking (bijv. allergieen, extra shot...)</label>
+      <label>Opmerking</label>
       <textarea id="order-note" rows="3" placeholder="Bijv. lactosevrije melk, extra warm..."></textarea>
     </div>
     <button class="btn btn-primary btn-full" style="margin-top:16px" onclick="placeOrder()">
@@ -202,61 +240,57 @@ function changeQty(id, delta) {
   renderCartModal();
 }
 
-function placeOrder() {
+async function placeOrder() {
   if (cart.length === 0) return;
 
+  const btn = document.querySelector('#cart-body .btn-primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'Bezig...'; }
+
   const note = document.getElementById('order-note')?.value || '';
-  const orders = getOrders();
   const order = {
-    id: Date.now(),
     table: getTableNumber(),
-    items: [...cart],
+    items: cart.map(i => ({ id: i.id, name: i.name, emoji: i.emoji, price: i.price, qty: i.qty })),
     note,
     status: 'new',
     time: new Date().toISOString(),
     total: cart.reduce((s, i) => s + i.price * i.qty, 0),
   };
 
-  orders.push(order);
-  saveOrders(orders);
+  await pushOrder(order);
 
   cart = [];
   updateCartFab();
 
-  const body = document.getElementById('cart-body');
-  body.innerHTML = `
+  document.getElementById('cart-body').innerHTML = `
     <div class="order-success">
       <span class="big-emoji">🎉</span>
       <h2>Bestelling geplaatst!</h2>
       <p>Tafel ${order.table} — we komen zo bij je!</p>
-      <p style="margin-top:8px;font-size:0.85rem">Bestelnummer: #${String(order.id).slice(-4)}</p>
     </div>
   `;
 
   setTimeout(() => closeCart(), 3000);
 }
 
-// ─── RENDER KITCHEN ───
-function renderKitchen() {
+// ─── KITCHEN ───
+function renderKitchen(orders) {
   const container = document.getElementById('kitchen-container');
   if (!container) return;
 
-  const orders = getOrders().filter(o => o.status !== 'done');
+  const active = orders.filter(o => o.status !== 'done');
 
-  if (orders.length === 0) {
+  if (active.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
         <span class="big-emoji">☕</span>
         <p>Geen openstaande bestellingen</p>
-      </div>
-    `;
+      </div>`;
     return;
   }
 
   container.innerHTML = `<div class="kitchen-grid">
-    ${orders.map(order => {
-      const time = new Date(order.time);
-      const elapsed = Math.floor((Date.now() - time) / 60000);
+    ${active.map(order => {
+      const elapsed = Math.floor((Date.now() - new Date(order.time)) / 60000);
       return `
         <div class="order-card ${order.status === 'new' ? 'new' : ''} ${order.status === 'ready' ? 'ready' : ''}">
           <div class="order-card-header">
@@ -271,12 +305,11 @@ function renderKitchen() {
           </ul>
           ${order.note ? `<div class="order-note-text">📝 ${order.note}</div>` : ''}
           <div class="order-actions">
-            ${order.status === 'new' ? `<button class="btn btn-warning btn-sm" onclick="updateOrderStatus(${order.id}, 'making')">🔄 Wordt gemaakt</button>` : ''}
-            ${order.status === 'making' ? `<button class="btn btn-success btn-sm" onclick="updateOrderStatus(${order.id}, 'ready')">✓ Klaar</button>` : ''}
-            ${order.status === 'ready' ? `<button class="btn btn-sm" onclick="updateOrderStatus(${order.id}, 'done')" style="background:var(--border)">Afgeleverd</button>` : ''}
+            ${order.status === 'new' ? `<button class="btn btn-warning btn-sm" onclick="updateOrderStatus('${order.fbKey}', 'making')">🔄 Wordt gemaakt</button>` : ''}
+            ${order.status === 'making' ? `<button class="btn btn-success btn-sm" onclick="updateOrderStatus('${order.fbKey}', 'ready')">✓ Klaar</button>` : ''}
+            ${order.status === 'ready' ? `<button class="btn btn-sm" onclick="updateOrderStatus('${order.fbKey}', 'done')" style="background:var(--border)">Afgeleverd</button>` : ''}
           </div>
-        </div>
-      `;
+        </div>`;
     }).join('')}
   </div>`;
 }
@@ -285,24 +318,11 @@ function statusLabel(s) {
   return { new: 'Nieuw', making: 'Bezig', ready: 'Klaar', done: 'Afgeleverd' }[s] || s;
 }
 
-function updateOrderStatus(id, status) {
-  const orders = getOrders();
-  const order = orders.find(o => o.id === id);
-  if (order) {
-    order.status = status;
-    saveOrders(orders);
-    renderKitchen();
-  }
+async function updateOrderStatus(fbKey, status) {
+  await updateOrderInDb(fbKey, { status });
 }
 
-// ─── RENDER ADMIN ───
-let adminSection = 'products';
-let editingId = null;
-
-function renderAdmin() {
-  renderAdminProducts();
-}
-
+// ─── ADMIN ───
 function renderAdminProducts() {
   const container = document.getElementById('admin-main');
   if (!container) return;
@@ -314,20 +334,18 @@ function renderAdminProducts() {
       <button class="btn btn-primary" onclick="showAddForm()">+ Product toevoegen</button>
     </div>
     <div id="product-form-area"></div>
-    <div class="product-list" id="product-list">
+    <div class="product-list">
       ${menu.map(item => `
         <div class="product-row">
           <span class="product-row-emoji">${item.emoji}</span>
           <div class="product-row-info">
             <div class="product-row-name">${item.name}</div>
-            <div class="product-row-cat">${item.category} ${item.available === false ? '· <span style="color:var(--danger)">Uitgeschakeld</span>' : ''}</div>
+            <div class="product-row-cat">${item.category}${item.available === false ? ' · <span style="color:var(--danger)">Uit</span>' : ''}</div>
           </div>
           <span class="product-row-price">€ ${item.price.toFixed(2)}</span>
-          <button class="btn-icon" onclick="editProduct(${item.id})" title="Bewerken">✏️</button>
-          <button class="btn-icon danger" onclick="toggleAvailable(${item.id})" title="In/uitschakelen">
-            ${item.available === false ? '✅' : '🚫'}
-          </button>
-          <button class="btn-icon danger" onclick="deleteProduct(${item.id})" title="Verwijderen">🗑️</button>
+          <button class="btn-icon" onclick="editProduct(${item.id})">✏️</button>
+          <button class="btn-icon danger" onclick="toggleAvailable(${item.id})">${item.available === false ? '✅' : '🚫'}</button>
+          <button class="btn-icon danger" onclick="deleteProduct(${item.id})">🗑️</button>
         </div>
       `).join('')}
     </div>
@@ -337,7 +355,7 @@ function renderAdminProducts() {
 function showAddForm(existing) {
   const area = document.getElementById('product-form-area');
   if (!area) return;
-  const item = existing || { emoji: '☕', name: '', desc: '', price: '', category: 'Koffie' };
+  const item = existing || { emoji: '☕', name: '', desc: '', price: '', category: 'Koffie', img: '' };
 
   area.innerHTML = `
     <div class="form-card" style="margin-bottom:24px">
@@ -362,9 +380,15 @@ function showAddForm(existing) {
         <label>Beschrijving</label>
         <input id="f-desc" value="${item.desc}" placeholder="korte omschrijving">
       </div>
-      <div class="form-group">
-        <label>Prijs (€)</label>
-        <input id="f-price" type="number" step="0.1" min="0" value="${item.price}" placeholder="3.50">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Prijs (€)</label>
+          <input id="f-price" type="number" step="0.1" min="0" value="${item.price}" placeholder="3.50">
+        </div>
+        <div class="form-group">
+          <label>Foto URL</label>
+          <input id="f-img" value="${item.img || ''}" placeholder="https://...">
+        </div>
       </div>
       <div style="display:flex;gap:12px;margin-top:8px">
         <button class="btn btn-primary" onclick="saveProduct(${existing ? existing.id : 'null'})">
@@ -387,27 +411,24 @@ function saveProduct(id) {
   const desc = document.getElementById('f-desc').value.trim();
   const price = parseFloat(document.getElementById('f-price').value);
   const category = document.getElementById('f-cat').value;
+  const img = document.getElementById('f-img').value.trim();
 
-  if (!name || isNaN(price)) {
-    alert('Vul naam en prijs in.');
-    return;
-  }
+  if (!name || isNaN(price)) { alert('Vul naam en prijs in.'); return; }
 
   const menu = getMenu();
   if (id) {
     const item = menu.find(i => i.id === id);
-    if (item) Object.assign(item, { emoji, name, desc, price, category });
+    if (item) Object.assign(item, { emoji, name, desc, price, category, img });
   } else {
     const newId = Math.max(...menu.map(i => i.id), 0) + 1;
-    menu.push({ id: newId, emoji, name, desc, price, category });
+    menu.push({ id: newId, emoji, name, desc, price, category, img });
   }
   saveMenu(menu);
   renderAdminProducts();
 }
 
 function editProduct(id) {
-  const menu = getMenu();
-  const item = menu.find(i => i.id === id);
+  const item = getMenu().find(i => i.id === id);
   if (item) showAddForm(item);
   document.getElementById('product-form-area')?.scrollIntoView({ behavior: 'smooth' });
 }
@@ -415,89 +436,78 @@ function editProduct(id) {
 function toggleAvailable(id) {
   const menu = getMenu();
   const item = menu.find(i => i.id === id);
-  if (item) {
-    item.available = item.available === false ? true : false;
-    saveMenu(menu);
-    renderAdminProducts();
-  }
+  if (item) { item.available = item.available === false ? true : false; saveMenu(menu); renderAdminProducts(); }
 }
 
 function deleteProduct(id) {
   if (!confirm('Weet je zeker dat je dit product wil verwijderen?')) return;
-  const menu = getMenu().filter(i => i.id !== id);
-  saveMenu(menu);
+  saveMenu(getMenu().filter(i => i.id !== id));
   renderAdminProducts();
 }
 
-function renderAdminOrders() {
+async function renderAdminOrders() {
   const container = document.getElementById('admin-main');
   if (!container) return;
-  const orders = getOrders();
+  container.innerHTML = `<div class="admin-section-title">Bestellingen</div><p style="color:var(--text-light)">Laden...</p>`;
 
-  const grouped = orders.slice().reverse();
+  const orders = await getOrders();
   const total = orders.reduce((s, o) => s + o.total, 0);
   const today = orders.filter(o => new Date(o.time).toDateString() === new Date().toDateString());
   const todayTotal = today.reduce((s, o) => s + o.total, 0);
+  const grouped = orders.slice().reverse();
 
   container.innerHTML = `
     <div class="admin-section-title">Bestellingen</div>
-    <div style="display:flex;gap:16px;margin-bottom:24px">
-      <div class="form-card" style="flex:1;padding:16px 20px">
+    <div style="display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap">
+      <div class="form-card" style="flex:1;min-width:140px;padding:16px 20px">
         <div style="font-size:0.8rem;color:var(--text-light)">Vandaag</div>
         <div style="font-size:1.4rem;font-weight:700;color:var(--primary)">€ ${todayTotal.toFixed(2)}</div>
         <div style="font-size:0.8rem;color:var(--text-light)">${today.length} bestellingen</div>
       </div>
-      <div class="form-card" style="flex:1;padding:16px 20px">
+      <div class="form-card" style="flex:1;min-width:140px;padding:16px 20px">
         <div style="font-size:0.8rem;color:var(--text-light)">Totaal ooit</div>
         <div style="font-size:1.4rem;font-weight:700;color:var(--primary)">€ ${total.toFixed(2)}</div>
         <div style="font-size:0.8rem;color:var(--text-light)">${orders.length} bestellingen</div>
       </div>
       <div style="display:flex;align-items:center">
-        <button class="btn btn-outline btn-sm" onclick="clearOrders()">🗑️ Wis alles</button>
+        <button class="btn btn-outline btn-sm" onclick="clearAllOrders()">🗑️ Wis alles</button>
       </div>
     </div>
-    ${grouped.length === 0 ? '<div class="empty-state"><span class="big-emoji">📋</span><p>Nog geen bestellingen</p></div>' :
-      grouped.map(o => `
+    ${grouped.length === 0
+      ? '<div class="empty-state"><span class="big-emoji">📋</span><p>Nog geen bestellingen</p></div>'
+      : grouped.map(o => `
         <div class="product-row" style="flex-wrap:wrap;gap:8px;margin-bottom:8px">
           <div style="font-weight:700;min-width:80px">Tafel ${o.table}</div>
-          <div style="flex:1;font-size:0.85rem;color:var(--text-light)">${o.items.map(i => `${i.emoji}${i.name} x${i.qty}`).join(', ')}</div>
+          <div style="flex:1;font-size:0.85rem;color:var(--text-light)">${o.items.map(i => `${i.emoji} ${i.name} x${i.qty}`).join(', ')}</div>
           <div style="color:var(--primary);font-weight:600">€ ${o.total.toFixed(2)}</div>
           <span class="status-badge status-${o.status}">${statusLabel(o.status)}</span>
           <div style="font-size:0.75rem;color:var(--text-light)">${new Date(o.time).toLocaleTimeString('nl-BE', {hour:'2-digit',minute:'2-digit'})}</div>
-        </div>
-      `).join('')
+        </div>`).join('')
     }
   `;
 }
 
-function clearOrders() {
+async function clearAllOrders() {
   if (!confirm('Wis alle bestellingen?')) return;
-  saveOrders([]);
+  await fbDelete('orders');
   renderAdminOrders();
 }
 
 function renderAdminQR() {
   const container = document.getElementById('admin-main');
   if (!container) return;
-
   const baseUrl = window.location.href.replace('admin.html', 'index.html');
   const tables = [1,2,3,4,5,6,7,8,9,10];
 
   container.innerHTML = `
     <div class="admin-section-title">QR-codes per tafel</div>
-    <p style="color:var(--text-light);margin-bottom:24px;font-size:0.9rem">
-      Deel deze links of print de QR-codes. Elke tafel heeft een unieke URL.
-    </p>
+    <p style="color:var(--text-light);margin-bottom:24px;font-size:0.9rem">Deel deze links of print de QR-codes.</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px">
       ${tables.map(t => `
         <div class="form-card" style="text-align:center;padding:20px">
           <div style="font-size:1.1rem;font-weight:700;margin-bottom:8px">Tafel ${t}</div>
-          <div style="font-size:0.75rem;word-break:break-all;color:var(--text-light);margin-bottom:12px">
-            ${baseUrl}?tafel=${t}
-          </div>
-          <button class="btn btn-primary btn-sm" onclick="copyLink('${baseUrl}?tafel=${t}')">
-            Kopieer link
-          </button>
+          <div style="font-size:0.72rem;word-break:break-all;color:var(--text-light);margin-bottom:12px">${baseUrl}?tafel=${t}</div>
+          <button class="btn btn-primary btn-sm" onclick="copyLink('${baseUrl}?tafel=${t}')">Kopieer link</button>
         </div>
       `).join('')}
     </div>
@@ -510,15 +520,11 @@ function copyLink(url) {
 
 // ─── INIT ───
 document.addEventListener('DOMContentLoaded', () => {
-  // Menu page
-  if (document.getElementById('menu-container')) {
-    const tableNum = getTableNumber();
-    const badge = document.getElementById('table-badge');
-    if (badge) badge.textContent = `Tafel ${tableNum}`;
 
+  // ── Menukaart ──
+  if (document.getElementById('menu-container')) {
     renderMenu();
 
-    // Category tabs
     document.querySelectorAll('.nav-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
@@ -527,19 +533,20 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Cart overlay close on backdrop click
-    document.getElementById('cart-overlay')?.addEventListener('click', (e) => {
+    document.getElementById('cart-overlay')?.addEventListener('click', e => {
       if (e.target === e.currentTarget) closeCart();
     });
   }
 
-  // Kitchen page
+  // ── Kitchen display ──
   if (document.getElementById('kitchen-container')) {
-    renderKitchen();
-    setInterval(renderKitchen, 5000);
+    fbListen('orders', () => {
+      getOrders().then(orders => renderKitchen(orders));
+    });
+    getOrders().then(orders => renderKitchen(orders));
   }
 
-  // Admin page
+  // ── Admin ──
   if (document.getElementById('admin-main')) {
     renderAdminProducts();
 
