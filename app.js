@@ -1,10 +1,11 @@
 // ─── LANGUAGE ───
-let currentLang = 'nl';
+let currentLang = localStorage.getItem('flow_lang') || 'nl';
 
 function t() { return TRANSLATIONS[currentLang]; }
 
 function setLang(lang) {
   currentLang = lang;
+  localStorage.setItem('flow_lang', lang);
   renderLangSwitcher();
   renderHeroQuote();
   renderNavTabs();
@@ -41,7 +42,7 @@ function renderNavTabs() {
   `).join('');
   nav.querySelectorAll('.nav-tab').forEach(tab => {
     tab.addEventListener('click', () => {
-      nav.querySelectorAll('.nav-tab').forEach(tb => tb.classList.remove('active'));
+      nav.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       renderMenu();
     });
@@ -623,6 +624,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('cart-overlay')?.addEventListener('click', e => {
       if (e.target === e.currentTarget) closeCart();
+    });
+
+    // ── Welkom pop-up ──
+    const overlay = document.createElement('div');
+    overlay.className = 'welcome-overlay';
+    overlay.innerHTML = `
+      <div class="welcome-card">
+        <div class="welcome-logo">
+          <div class="script">flow</div>
+          <div class="welcome-sub">Coffeebar</div>
+        </div>
+        <p class="welcome-tagline">Meer dan koffie alleen.</p>
+        <p class="welcome-text">De plek waar je mag landen, jezelf kunt zijn en gezien wordt.</p>
+        <button class="welcome-btn">Klik hier om door te gaan</button>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    overlay.querySelector('.welcome-btn').addEventListener('click', function() {
+      overlay.style.display = 'none';
     });
   }
 
