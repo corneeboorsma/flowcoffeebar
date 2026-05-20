@@ -13,7 +13,7 @@
 <body>
 
   <!-- WELKOM POP-UP -->
-  <div class="welcome-overlay" id="welcome-overlay" onclick="dismissWelcome()">
+  <div class="welcome-overlay" id="welcome-overlay">
     <div class="welcome-card">
       <div class="welcome-logo">
         <div class="script">flow</div>
@@ -21,7 +21,7 @@
       </div>
       <p class="welcome-tagline">Meer dan koffie alleen.</p>
       <p class="welcome-text">De plek waar je mag landen, jezelf kunt zijn en gezien wordt.</p>
-      <button class="welcome-btn" onclick="dismissWelcome()">Klik hier om door te gaan</button>
+      <button class="welcome-btn" id="welcome-btn">Klik hier om door te gaan</button>
     </div>
   </div>
 
@@ -72,13 +72,15 @@
   <script src="translations.js"></script>
   <script src="app.js"></script>
   <script>
-    function dismissWelcome() {
-      const overlay = document.getElementById('welcome-overlay');
-      if (!overlay) return;
+    document.getElementById('welcome-btn').addEventListener('click', function() {
+      var overlay = document.getElementById('welcome-overlay');
+      overlay.style.transition = 'opacity 0.4s ease';
       overlay.style.opacity = '0';
       overlay.style.pointerEvents = 'none';
-      setTimeout(() => { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 400);
-    }
+      setTimeout(function() {
+        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+      }, 420);
+    });
   </script>
 </body>
 </html>
