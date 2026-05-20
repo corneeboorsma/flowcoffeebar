@@ -104,10 +104,7 @@ async function deleteOrderFromDb(fbKey) {
 // ─── CART STATE ───
 let cart = [];
 
-function getTableNumber() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('tafel') || '1';
-}
+function getTableNumber() { return ''; }
 
 // ─── RENDER MENUKAART ───
 function renderMenu() {
@@ -248,7 +245,6 @@ async function placeOrder() {
 
   const note = document.getElementById('order-note')?.value || '';
   const order = {
-    table: getTableNumber(),
     items: cart.map(i => ({ id: i.id, name: i.name, emoji: i.emoji, price: i.price, qty: i.qty })),
     note,
     status: 'new',
@@ -265,7 +261,7 @@ async function placeOrder() {
     <div class="order-success">
       <span class="big-emoji">🎉</span>
       <h2>Bestelling geplaatst!</h2>
-      <p>Tafel ${order.table} — we komen zo bij je!</p>
+      <p>We komen zo bij je!</p>
     </div>
   `;
 
@@ -294,7 +290,7 @@ function renderKitchen(orders) {
       return `
         <div class="order-card ${order.status === 'new' ? 'new' : ''} ${order.status === 'ready' ? 'ready' : ''}">
           <div class="order-card-header">
-            <span class="order-table">Tafel ${order.table}</span>
+            <span class="order-table">#${String(order.time).slice(-6, -3)}</span>
             <div style="display:flex;align-items:center;gap:8px">
               <span class="status-badge status-${order.status}">${statusLabel(order.status)}</span>
               <span class="order-time">${elapsed}m geleden</span>
@@ -477,7 +473,6 @@ async function renderAdminOrders() {
       ? '<div class="empty-state"><span class="big-emoji">📋</span><p>Nog geen bestellingen</p></div>'
       : grouped.map(o => `
         <div class="product-row" style="flex-wrap:wrap;gap:8px;margin-bottom:8px">
-          <div style="font-weight:700;min-width:80px">Tafel ${o.table}</div>
           <div style="flex:1;font-size:0.85rem;color:var(--text-light)">${o.items.map(i => `${i.emoji} ${i.name} x${i.qty}`).join(', ')}</div>
           <div style="color:var(--primary);font-weight:600">€ ${o.total.toFixed(2)}</div>
           <span class="status-badge status-${o.status}">${statusLabel(o.status)}</span>
@@ -496,20 +491,14 @@ async function clearAllOrders() {
 function renderAdminQR() {
   const container = document.getElementById('admin-main');
   if (!container) return;
-  const baseUrl = window.location.href.replace('admin.html', 'index.html');
-  const tables = [1,2,3,4,5,6,7,8,9,10];
+  const menuUrl = window.location.href.replace('admin.html', 'index.html');
 
   container.innerHTML = `
-    <div class="admin-section-title">QR-codes per tafel</div>
-    <p style="color:var(--text-light);margin-bottom:24px;font-size:0.9rem">Deel deze links of print de QR-codes.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px">
-      ${tables.map(t => `
-        <div class="form-card" style="text-align:center;padding:20px">
-          <div style="font-size:1.1rem;font-weight:700;margin-bottom:8px">Tafel ${t}</div>
-          <div style="font-size:0.72rem;word-break:break-all;color:var(--text-light);margin-bottom:12px">${baseUrl}?tafel=${t}</div>
-          <button class="btn btn-primary btn-sm" onclick="copyLink('${baseUrl}?tafel=${t}')">Kopieer link</button>
-        </div>
-      `).join('')}
+    <div class="admin-section-title">Menukaart link</div>
+    <p style="color:var(--text-light);margin-bottom:24px;font-size:0.9rem">Deel deze link met je klanten.</p>
+    <div class="form-card" style="max-width:480px">
+      <div style="font-size:0.82rem;word-break:break-all;color:var(--text-mid);margin-bottom:16px;padding:12px;background:var(--bg-soft);border-radius:8px">${menuUrl}</div>
+      <button class="btn btn-primary" onclick="copyLink('${menuUrl}')">Kopieer link</button>
     </div>
   `;
 }
