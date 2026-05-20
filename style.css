@@ -41,8 +41,8 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 400; }
 .header {
   background: var(--white);
   border-bottom: 1px solid var(--border);
-  padding: 0 28px;
-  height: 78px;
+  padding: 16px 28px;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -60,7 +60,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 400; }
 }
 
 .header-logo .script {
-  font-size: 2.6rem;
+  font-size: 5.2rem;
   color: var(--primary);
   letter-spacing: -0.5px;
 }
