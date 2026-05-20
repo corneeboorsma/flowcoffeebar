@@ -228,6 +228,9 @@ function renderCartModal() {
           <button class="time-slot" onclick="selectTime(this, '${t}')">${t}</button>
         `).join('')}
       </div>
+      <div id="time-error" style="display:none;margin-top:8px;color:var(--danger);font-size:0.85rem;font-weight:500">
+        ⚠ Kies een afhaaltijdstip om verder te gaan.
+      </div>
     </div>
     <div class="order-note">
       <label>Opmerking</label>
@@ -251,6 +254,8 @@ function changeQty(id, delta) {
 function selectTime(btn, time) {
   document.querySelectorAll('.time-slot').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  const err = document.getElementById('time-error');
+  if (err) err.style.display = 'none';
 }
 
 async function placeOrder() {
@@ -263,7 +268,11 @@ async function placeOrder() {
   const pickupTime = document.querySelector('.time-slot.active')?.textContent || '';
 
   if (!pickupTime) {
-    alert('Kies een afhaaltijdstip.');
+    const err = document.getElementById('time-error');
+    if (err) {
+      err.style.display = 'block';
+      err.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
     const btn = document.querySelector('#cart-body .btn-primary');
     if (btn) { btn.disabled = false; btn.textContent = 'Bestelling plaatsen →'; }
     return;
