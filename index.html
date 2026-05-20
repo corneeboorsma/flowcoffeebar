@@ -12,6 +12,19 @@
 </head>
 <body>
 
+  <!-- WELKOM POP-UP -->
+  <div class="welcome-overlay" id="welcome-overlay" onclick="dismissWelcome()">
+    <div class="welcome-card">
+      <div class="welcome-logo">
+        <div class="script">flow</div>
+        <div class="subtitle">Coffeebar</div>
+      </div>
+      <p class="welcome-tagline">Meer dan koffie alleen.</p>
+      <p class="welcome-text">De plek waar je mag landen, jezelf kunt zijn en gezien wordt.</p>
+      <button class="welcome-btn" onclick="dismissWelcome()">Klik hier om door te gaan</button>
+    </div>
+  </div>
+
   <!-- HEADER -->
   <header class="header">
     <div class="header-spacer"></div>
@@ -58,5 +71,12 @@
 
   <script src="translations.js"></script>
   <script src="app.js"></script>
+  <script>
+    function dismissWelcome() {
+      const overlay = document.getElementById('welcome-overlay');
+      overlay.classList.add('fade-out');
+      setTimeout(() => overlay.remove(), 400);
+    }
+  </script>
 </body>
 </html>
