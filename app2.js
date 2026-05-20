@@ -131,8 +131,13 @@ function fbListen(path, callback) {
 
 // ─── MENU (localStorage) ───
 function getMenu() {
-  const stored = localStorage.getItem('flow_menu');
-  return stored ? JSON.parse(stored) : DEFAULT_MENU;
+  try {
+    const stored = localStorage.getItem('flow_menu');
+    return stored ? JSON.parse(stored) : DEFAULT_MENU;
+  } catch(e) {
+    localStorage.removeItem('flow_menu');
+    return DEFAULT_MENU;
+  }
 }
 
 function saveMenu(menu) {
@@ -616,10 +621,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Menukaart ──
   if (document.getElementById('menu-container')) {
-    renderLangSwitcher();
-    renderHeroQuote();
-    renderNavTabs();
-    renderMenu();
+    try {
+      renderLangSwitcher();
+      renderHeroQuote();
+      renderNavTabs();
+      renderMenu();
+    } catch(e) {
+      document.getElementById('menu-container').innerHTML =
+        '<div style="padding:40px;color:red;font-family:monospace">FOUT: ' + e.message + '</div>';
+    }
 
     document.getElementById('cart-overlay')?.addEventListener('click', e => {
       if (e.target === e.currentTarget) closeCart();
