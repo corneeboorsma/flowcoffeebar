@@ -45,10 +45,14 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 400; }
   height: auto;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   position: sticky;
   top: 0;
   z-index: 100;
+}
+
+.header-spacer {
+  flex: 1;
 }
 
 .header-logo {
@@ -57,6 +61,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 400; }
   line-height: 1;
   align-items: center;
   text-align: center;
+  flex: 0 0 auto;
 }
 
 .header-logo .script {
@@ -812,11 +817,11 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 400; }
 
 /* ─── LANGUAGE SWITCHER ─── */
 .lang-switcher {
-  position: absolute;
-  right: 24px;
+  flex: 1;
   display: flex;
   gap: 6px;
   align-items: center;
+  justify-content: flex-end;
 }
 
 .lang-btn {
@@ -853,7 +858,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 400; }
   .header { padding: 0 16px; height: 60px; }
   .header-logo .script { font-size: 1.7rem; }
 
-  .lang-switcher { right: 10px; gap: 3px; }
+  .lang-switcher { gap: 3px; }
   .lang-btn { padding: 3px 6px; font-size: 0.7rem; gap: 2px; }
   .lang-btn span:last-child { display: none; }
 
