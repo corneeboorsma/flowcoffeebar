@@ -20,22 +20,16 @@
         <div class="subtitle">Coffeebar</div>
       </div>
     </div>
+    <div class="lang-switcher" id="lang-switcher"></div>
   </header>
 
   <!-- BIJBELTEKST -->
   <div class="hero-quote-wrap">
-    <p class="hero-quote">"Maak je dan geen zorgen voor de dag van morgen,<br>want de dag van morgen zal voor zichzelf zorgen."</p>
+    <p class="hero-quote" id="hero-quote"></p>
   </div>
 
   <!-- CATEGORY TABS -->
-  <nav class="nav-tabs">
-    <button class="nav-tab active" data-category="Breakfast">🍳 Breakfast</button>
-    <button class="nav-tab" data-category="Koffie">☕ Koffie</button>
-    <button class="nav-tab" data-category="Specials">✨ Specials</button>
-    <button class="nav-tab" data-category="Thee">🫖 Thee</button>
-    <button class="nav-tab" data-category="Panino">🥪 Panino</button>
-    <button class="nav-tab" data-category="Salades">🥗 Salades</button>
-  </nav>
+  <nav class="nav-tabs" id="nav-tabs"></nav>
 
   <!-- MENU -->
   <main id="menu-container"></main>
@@ -45,7 +39,7 @@
     <span class="cart-fab-left">
       🛒
       <span class="cart-count" id="cart-count">0</span>
-      Mandje
+      <span id="cart-fab-label">Mandje</span>
     </span>
     <span id="cart-total-fab">€ 0.00</span>
   </button>
@@ -54,13 +48,14 @@
   <div class="modal-overlay" id="cart-overlay">
     <div class="modal">
       <div class="modal-header">
-        <h2 class="modal-title">Jouw bestelling</h2>
+        <h2 class="modal-title" id="modal-title">Jouw bestelling</h2>
         <button class="modal-close" onclick="closeCart()">✕</button>
       </div>
       <div id="cart-body"></div>
     </div>
   </div>
 
+  <script src="translations.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

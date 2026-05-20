@@ -810,10 +810,52 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 400; }
   50% { opacity: 0.3; }
 }
 
+/* ─── LANGUAGE SWITCHER ─── */
+.lang-switcher {
+  position: absolute;
+  right: 24px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--text-light);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.lang-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.lang-btn.active {
+  background: var(--accent-light);
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 600;
+}
+
 /* ─── RESPONSIVE ─── */
 @media (max-width: 640px) {
   .header { padding: 0 16px; height: 60px; }
   .header-logo .script { font-size: 1.7rem; }
+
+  .lang-switcher { right: 10px; gap: 3px; }
+  .lang-btn { padding: 3px 6px; font-size: 0.7rem; gap: 2px; }
+  .lang-btn span:last-child { display: none; }
 
   .nav-tabs { padding: 0 12px; }
   .nav-tab { padding: 14px 14px; font-size: 0.83rem; }

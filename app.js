@@ -1,3 +1,54 @@
+// ─── LANGUAGE ───
+let currentLang = localStorage.getItem('flow_lang') || 'nl';
+
+function t() { return TRANSLATIONS[currentLang]; }
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('flow_lang', lang);
+  renderLangSwitcher();
+  renderHeroQuote();
+  renderNavTabs();
+  renderMenu();
+  updateCartFab();
+  if (document.getElementById('cart-overlay')?.classList.contains('open')) {
+    renderCartModal();
+  }
+  document.getElementById('modal-title') && (document.getElementById('modal-title').textContent = t().yourOrder);
+}
+
+function renderLangSwitcher() {
+  const el = document.getElementById('lang-switcher');
+  if (!el) return;
+  el.innerHTML = Object.entries(TRANSLATIONS).map(([code, tr]) => `
+    <button class="lang-btn ${code === currentLang ? 'active' : ''}" onclick="setLang('${code}')">
+      <span>${tr.flag}</span> <span>${tr.lang}</span>
+    </button>
+  `).join('');
+}
+
+function renderHeroQuote() {
+  const el = document.getElementById('hero-quote');
+  if (el) el.innerHTML = t().bibleQuote;
+}
+
+function renderNavTabs() {
+  const nav = document.getElementById('nav-tabs');
+  if (!nav) return;
+  const categories = ['Breakfast', 'Koffie', 'Specials', 'Thee', 'Panino', 'Salades'];
+  const activeCategory = nav.querySelector('.nav-tab.active')?.dataset.category || 'Breakfast';
+  nav.innerHTML = categories.map(cat => `
+    <button class="nav-tab ${cat === activeCategory ? 'active' : ''}" data-category="${cat}">${t().categories[cat]}</button>
+  `).join('');
+  nav.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      nav.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      renderMenu();
+    });
+  });
+}
+
 // ─── DEFAULT MENU DATA ───
 const DEFAULT_MENU = [
   // Koffie
@@ -119,33 +170,37 @@ function renderMenu() {
   const container = document.getElementById('menu-container');
   if (!container) return;
 
-  const activeCategory = document.querySelector('.nav-tab.active')?.dataset.category || 'Koffie';
+  const nav = document.getElementById('nav-tabs');
+  const activeCategory = nav?.querySelector('.nav-tab.active')?.dataset.category || 'Breakfast';
   const items = menu.filter(i => i.category === activeCategory && i.available !== false && i.img);
+  const tr = t();
 
   container.innerHTML = `
     <div class="menu-section">
-      <h2 class="section-title">${activeCategory}</h2>
+      <h2 class="section-title">${tr.categories[activeCategory]}</h2>
       <div class="menu-grid">
-        ${items.map(item => `
+        ${items.map(item => {
+          const p = tr.products[item.id] || { name: item.name, desc: item.desc };
+          return `
           <div class="menu-item" onclick="addToCart(${item.id})">
             <div class="menu-item-img-wrap">
-              <img class="menu-item-img" src="${item.img}" alt="${item.name}"
+              <img class="menu-item-img" src="${item.img}" alt="${p.name}"
                 onerror="this.closest('.menu-item').style.display='none'">
             </div>
             <div class="menu-item-body">
-              <div class="menu-item-name">${item.name}</div>
-              <div class="menu-item-desc">${item.desc}</div>
+              <div class="menu-item-name">${p.name}</div>
+              <div class="menu-item-desc">${p.desc}</div>
               <div class="menu-item-footer">
                 <span class="menu-item-price">€ ${item.price.toFixed(2)}</span>
                 <button class="menu-item-add" onclick="event.stopPropagation(); addToCart(${item.id})">+</button>
               </div>
             </div>
-          </div>
-        `).join('')}
+          </div>`;
+        }).join('')}
       </div>
     </div>
     <footer class="footer-text">
-      <p class="hero-sub">Bestel nu gemakkelijk je ontbijt voor morgen!<br><strong>Coffee and Breakfast to Flow!</strong></p>
+      <p class="hero-sub">${tr.footerLine1}<br><strong>${tr.footerLine2}</strong></p>
     </footer>
   `;
 }
@@ -173,9 +228,11 @@ function updateCartFab() {
   const fab = document.getElementById('cart-fab');
   const count = document.getElementById('cart-count');
   const total = document.getElementById('cart-total-fab');
+  const label = document.getElementById('cart-fab-label');
   if (!fab) return;
   const totalQty = cart.reduce((s, i) => s + i.qty, 0);
   const totalPrice = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  if (label) label.textContent = t().basket;
   if (totalQty === 0) {
     fab.classList.add('hidden');
   } else {
@@ -197,25 +254,28 @@ function closeCart() {
 function renderCartModal() {
   const body = document.getElementById('cart-body');
   if (!body) return;
+  const tr = t();
 
   if (cart.length === 0) {
     body.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-light)">
-      <span style="font-size:2.5rem">🛒</span><br><br>Je winkelmandje is leeg
+      <span style="font-size:2.5rem">🛒</span><br><br>${tr.empty}
     </div>`;
     return;
   }
 
   const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
   body.innerHTML = `
-    ${cart.map(item => `
+    ${cart.map(item => {
+      const p = tr.products[item.id] || { name: item.name };
+      return `
       <div class="cart-item">
         <div class="cart-item-thumb">
           ${item.img
-            ? `<img src="${item.img}" alt="${item.name}" onerror="this.parentElement.textContent='${item.emoji}'">`
+            ? `<img src="${item.img}" alt="${p.name}" onerror="this.parentElement.textContent='${item.emoji}'">`
             : item.emoji}
         </div>
         <div class="cart-item-info">
-          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-name">${p.name}</div>
           <div class="cart-item-price">€ ${(item.price * item.qty).toFixed(2)}</div>
         </div>
         <div class="qty-control">
@@ -223,29 +283,29 @@ function renderCartModal() {
           <span class="qty-num">${item.qty}</span>
           <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
         </div>
-      </div>
-    `).join('')}
+      </div>`;
+    }).join('')}
     <div class="cart-total">
-      <span>Totaal</span>
+      <span>${tr.total}</span>
       <span>€ ${total.toFixed(2)}</span>
     </div>
     <div class="order-note">
-      <label>Afhaaltijdstip</label>
+      <label>${tr.pickupTime}</label>
       <div class="time-slots">
-        ${['07:30','08:00','08:30','09:00','09:30'].map(t => `
-          <button class="time-slot" onclick="selectTime(this, '${t}')">${t}</button>
+        ${['07:30','08:00','08:30','09:00','09:30'].map(time => `
+          <button class="time-slot" onclick="selectTime(this, '${time}')">${time}</button>
         `).join('')}
       </div>
       <div id="time-error" style="display:none;margin-top:8px;color:var(--danger);font-size:0.85rem;font-weight:500">
-        ⚠ Kies een afhaaltijdstip om verder te gaan.
+        ${tr.timeError}
       </div>
     </div>
     <div class="order-note">
-      <label>Opmerking</label>
-      <textarea id="order-note" rows="3" placeholder="Bijv. lactosevrije melk, extra warm..."></textarea>
+      <label>${tr.note}</label>
+      <textarea id="order-note" rows="3" placeholder="${tr.notePlaceholder}"></textarea>
     </div>
     <button class="btn btn-primary btn-full" style="margin-top:16px" onclick="placeOrder()">
-      Bestelling plaatsen &rarr;
+      ${tr.placeOrder}
     </button>
   `;
 }
@@ -268,9 +328,10 @@ function selectTime(btn, time) {
 
 async function placeOrder() {
   if (cart.length === 0) return;
+  const tr = t();
 
   const btn = document.querySelector('#cart-body .btn-primary');
-  if (btn) { btn.disabled = true; btn.textContent = 'Bezig...'; }
+  if (btn) { btn.disabled = true; btn.textContent = tr.placing; }
 
   const note = document.getElementById('order-note')?.value || '';
   const pickupTime = document.querySelector('.time-slot.active')?.textContent || '';
@@ -282,7 +343,7 @@ async function placeOrder() {
       err.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
     const btn = document.querySelector('#cart-body .btn-primary');
-    if (btn) { btn.disabled = false; btn.textContent = 'Bestelling plaatsen →'; }
+    if (btn) { btn.disabled = false; btn.textContent = tr.placeOrder; }
     return;
   }
 
@@ -303,9 +364,9 @@ async function placeOrder() {
   document.getElementById('cart-body').innerHTML = `
     <div class="order-success">
       <span class="big-emoji">☕</span>
-      <h2>Bestelling geplaatst!</h2>
-      <p>Jouw <strong>Flow-moment</strong> staat klaar om <strong>${order.pickupTime}</strong>.</p>
-      <p style="margin-top:8px;font-size:0.85rem;color:var(--text-light)">Tot morgen! ✨</p>
+      <h2>${tr.successTitle}</h2>
+      <p>${tr.successMsg(order.pickupTime)}</p>
+      <p style="margin-top:8px;font-size:0.85rem;color:var(--text-light)">${tr.successSub}</p>
     </div>
   `;
 
@@ -556,15 +617,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Menukaart ──
   if (document.getElementById('menu-container')) {
+    renderLangSwitcher();
+    renderHeroQuote();
+    renderNavTabs();
     renderMenu();
-
-    document.querySelectorAll('.nav-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        renderMenu();
-      });
-    });
 
     document.getElementById('cart-overlay')?.addEventListener('click', e => {
       if (e.target === e.currentTarget) closeCart();
