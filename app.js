@@ -137,6 +137,9 @@ function renderMenu() {
         `).join('')}
       </div>
     </div>
+    <footer class="footer-text">
+      <p class="hero-sub">Bestel nu gemakkelijk je ontbijt voor morgen! <strong>Coffee and Breakfast to Flow!</strong></p>
+    </footer>
   `;
 }
 
