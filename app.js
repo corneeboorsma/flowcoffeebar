@@ -219,6 +219,14 @@ function renderCartModal() {
       <span>€ ${total.toFixed(2)}</span>
     </div>
     <div class="order-note">
+      <label>Afhaaltijdstip</label>
+      <div class="time-slots">
+        ${['07:30','08:00','08:30','09:00','09:30'].map(t => `
+          <button class="time-slot" onclick="selectTime(this, '${t}')">${t}</button>
+        `).join('')}
+      </div>
+    </div>
+    <div class="order-note">
       <label>Opmerking</label>
       <textarea id="order-note" rows="3" placeholder="Bijv. lactosevrije melk, extra warm..."></textarea>
     </div>
@@ -237,6 +245,11 @@ function changeQty(id, delta) {
   renderCartModal();
 }
 
+function selectTime(btn, time) {
+  document.querySelectorAll('.time-slot').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
 async function placeOrder() {
   if (cart.length === 0) return;
 
@@ -244,9 +257,19 @@ async function placeOrder() {
   if (btn) { btn.disabled = true; btn.textContent = 'Bezig...'; }
 
   const note = document.getElementById('order-note')?.value || '';
+  const pickupTime = document.querySelector('.time-slot.active')?.textContent || '';
+
+  if (!pickupTime) {
+    alert('Kies een afhaaltijdstip.');
+    const btn = document.querySelector('#cart-body .btn-primary');
+    if (btn) { btn.disabled = false; btn.textContent = 'Bestelling plaatsen →'; }
+    return;
+  }
+
   const order = {
     items: cart.map(i => ({ id: i.id, name: i.name, emoji: i.emoji, price: i.price, qty: i.qty })),
     note,
+    pickupTime,
     status: 'new',
     time: new Date().toISOString(),
     total: cart.reduce((s, i) => s + i.price * i.qty, 0),
@@ -261,7 +284,7 @@ async function placeOrder() {
     <div class="order-success">
       <span class="big-emoji">🎉</span>
       <h2>Bestelling geplaatst!</h2>
-      <p>We komen zo bij je!</p>
+      <p>Afhalen om <strong>${order.pickupTime}</strong> — we komen zo bij je!</p>
     </div>
   `;
 
@@ -290,7 +313,7 @@ function renderKitchen(orders) {
       return `
         <div class="order-card ${order.status === 'new' ? 'new' : ''} ${order.status === 'ready' ? 'ready' : ''}">
           <div class="order-card-header">
-            <span class="order-table">#${String(order.time).slice(-6, -3)}</span>
+            <span class="order-table">🕐 ${order.pickupTime || '—'}</span>
             <div style="display:flex;align-items:center;gap:8px">
               <span class="status-badge status-${order.status}">${statusLabel(order.status)}</span>
               <span class="order-time">${elapsed}m geleden</span>

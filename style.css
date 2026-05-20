@@ -762,6 +762,38 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 400; }
 
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
+.time-slots {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.time-slot {
+  padding: 10px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 30px;
+  background: var(--bg-soft);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.time-slot:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.time-slot.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--white);
+  font-weight: 600;
+}
+
 /* ─── LIVE INDICATOR ─── */
 .live-dot {
   width: 8px;
