@@ -175,6 +175,9 @@ h1, h2, h3 {
   text-align: center;
   padding: 32px 24px 100px;
   width: 100%;
+  background: rgba(247, 244, 239, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .hero-sub {
