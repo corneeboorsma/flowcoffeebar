@@ -134,7 +134,6 @@ function t() { return TRANSLATIONS[currentLang]; }
 function setLang(lang) {
   currentLang = lang;
   renderLangSwitcher();
-  renderHeroQuote();
   renderNavTabs();
   renderMenu();
   updateCartFab();
@@ -751,7 +750,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('menu-container')) {
     try {
       renderLangSwitcher();
-      renderHeroQuote();
       renderNavTabs();
       renderMenu();
     } catch(e) {
