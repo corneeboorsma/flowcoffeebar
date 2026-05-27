@@ -39,6 +39,24 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url('bg.jpg') center center / cover no-repeat;
+  filter: blur(18px) brightness(0.55) saturate(0.8);
+  transform: scale(1.05);
+  z-index: -1;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(237, 235, 230, 0.72);
+  z-index: -1;
+}
+
 /* ─── TYPOGRAPHY ─── */
 h1, h2, h3 {
   font-family: 'Garet', 'Nunito', sans-serif;
@@ -53,7 +71,9 @@ h1, h2, h3 {
 
 /* ─── HEADER ─── */
 .header {
-  background: var(--bg-soft);
+  background: rgba(247, 244, 239, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   padding: 16px 28px;
   height: auto;
@@ -97,7 +117,9 @@ h1, h2, h3 {
   display: flex;
   gap: 0;
   padding: 0 20px;
-  background: var(--bg-soft);
+  background: rgba(247, 244, 239, 0.80);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   overflow-x: auto;
   scrollbar-width: none;
